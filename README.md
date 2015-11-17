@@ -10,12 +10,16 @@ The preferred way to install the Yii framework is through composer.
 
 Either run
 
+```
 composer global require "fxp/composer-asset-plugin:~1.1.0"
 composer require openbizx/openbizx
+```
 
 or add
 
+```
 "openbizx/openbizx": "~1.0.0",
+```
 
 to the require section of your composer.json.
 
