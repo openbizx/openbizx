@@ -9,7 +9,7 @@
  * with this package in the file LICENSE.txt.
  *
  * @package   Openbizx.Event
- * @copyright Copyright (c) 2005-2011, Openbizx LLC
+ * @copyright Copyright (c) 2005-2011, Openbiz LLC
  * @license   http://www.opensource.org/licenses/bsd-license.php
  * @link      http://www.phpopenbiz.org/
  * @version   $Id$
