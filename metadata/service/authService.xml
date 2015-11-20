@@ -1,0 +1,8 @@
+<?xml version="1.0" standalone="no"?>
+<PluginService Name="authService" 
+               xPackage="service" 
+               Class="Openbizx\Service\authService" 
+               BizDataObj="shared.BOAuth" 
+               AuthType="database">
+	
+</PluginService>

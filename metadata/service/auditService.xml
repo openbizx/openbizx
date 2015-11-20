@@ -1,0 +1,6 @@
+<?xml version="1.0" standalone="no"?>
+<PluginService Name="auditService" 
+               xPackage="service" 
+               Class="Openbizx\Service\auditService" 
+               BizDataObj="system.obj.d_audit_log" >
+</PluginService>

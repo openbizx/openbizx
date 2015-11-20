@@ -1,0 +1,5 @@
+<?xml version="1.0" standalone="no"?>
+<PluginService Name="validateService" 
+               Package="service" 
+               Class="Openbizx\Service\validateService">
+</PluginService>

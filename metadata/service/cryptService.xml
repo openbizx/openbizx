@@ -1,0 +1,9 @@
+<?xml version="1.0" standalone="no"?>
+<PluginService Name="cryptService" 
+               Package="service" 
+               Class="Openbizx\Service\cryptService" 
+               Algorithm="Twofish" 
+               OperationMode="ECB" 
+               DefaultKey="Openbizx System">
+
+</PluginService>
