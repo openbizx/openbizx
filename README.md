@@ -24,3 +24,4 @@ or add
 to the require section of your composer.json.
 
 
+Openbizx Dev Team
