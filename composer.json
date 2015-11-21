@@ -42,7 +42,8 @@
 		"zf1/zend-mail" : "1.*",
 		"zf1/zend-log" : "1.*",
 		"zf1/zend-validate" : "1.*",
-		"zf1/zend-json" : "1.*"
+		"zf1/zend-json" : "1.*",
+		"smarty/smarty" : "*"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.4",
