@@ -38,7 +38,7 @@
         "lib-pcre": "*",
         "zf1/zend-view": "1.*",
 		"zf1/zend-db" : "1.*",
-		"zf1/zend-cache" : "1.*",
+		"zf1/zend-cache" : ">=1.12.11",
 		"zf1/zend-mail" : "1.*",
 		"zf1/zend-log" : "1.*",
 		"zf1/zend-validate" : "1.*",
