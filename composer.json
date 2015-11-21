@@ -30,13 +30,19 @@
     },
     "minimum-stability": "dev",
     "replace": {
-        "yiisoft/yii2": "self.version"
+        "openbizx/openbizx": "self.version"
     },
     "require": {
         "php": ">=5.4.0",
         "ext-mbstring": "*",
         "lib-pcre": "*",
-        "zf1/zend-view": "1.*"
+        "zf1/zend-view": "1.*",
+		"zf1/zend-db" : "1.*",
+		"zf1/zend-cache" : "1.*",
+		"zf1/zend-mail" : "1.*",
+		"zf1/zend-log" : "1.*",
+		"zf1/zend-validate" : "1.*",
+		"zf1/zend-json" : "1.*"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.4",
