@@ -939,46 +939,22 @@ class Application //extends \Openbizx\Object\Object
     }
 
     /**
-     * Sets the root directory of the module.
+     * Sets the root directory of the application.
      * This method can only be invoked at the beginning of the constructor.
-     * @param string $path the root directory of the module. This can be either a directory name or a path alias.
+     * 
+     * @param string $path the root directory of the application. 
      * @throws InvalidParamException if the directory does not exist.
      */
     public function setBasePath($path)
     {
-        //$path = Yii::getAlias($path);
         $p = realpath($path);
         if ($p !== false && is_dir($p)) {
             $this->_basePath = $p;
         } else {
-            throw new InvalidParamException("The directory does not exist: $path");
+            throw new Exception("The directory does not exist: $path");
         }
     }
 
-    private $_vendorPath;
-
-    /**
-     * Returns the directory that stores vendor files.
-     * @return string the directory that stores vendor files.
-     * Defaults to "vendor" directory under [[basePath]].
-     */
-    public function getVendorPath()
-    {
-        if ($this->_vendorPath === null) {
-            $this->setVendorPath($this->getBasePath() . DIRECTORY_SEPARATOR . 'vendor');
-        }
-        return $this->_vendorPath;
-    }
-
-    /**
-     * Sets the directory that stores vendor files.
-     * @param string $path the directory that stores vendor files.
-     */
-    public function setVendorPath($path)
-    {
-        $this->_vendorPath = Yii::getAlias($path);
-        Yii::setAlias('@vendor', $this->_vendorPath);
-    }
 
     /**
      * Returns the time zone used by this application.

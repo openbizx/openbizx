@@ -43,16 +43,7 @@ class TemplateHelper
      */
     public static function getSmartyTemplate()
     {
-        /*
-          if(extension_loaded('ionCube Loader')){
-          include_once(SMARTY_DIR . "Smarty.class.php");
-          }else{
-          include_once(SMARTY_DIR . "Smarty.class.src.php");
-          }
-         *
-         */
-        $smarty = new \Smarty;
-
+        $smarty = new \SmartyBC;
         $useTheme = !defined('OPENBIZ_USE_THEME') ? 0 : OPENBIZ_USE_THEME;
         if ($useTheme) {
             $theme = Openbizx::$app->getCurrentTheme();
@@ -62,29 +53,27 @@ class TemplateHelper
             } else {
                 $templateRoot = OPENBIZ_THEME_PATH . "/" . $themePath . "/templates";
             }
-
-            $smarty->template_dir = $templateRoot;
-            $smarty->compile_dir = defined('OPENBIZ_SMARTY_CPL_PATH') ? OPENBIZ_SMARTY_CPL_PATH . "/" . $themePath : $templateRoot . "/cpl";
-            $smarty->config_dir = $templateRoot . "/cfg";
-            if (!file_exists($smarty->compile_dir)) {
-                @mkdir($smarty->compile_dir, 0777);
-            }
-            // load the config file which has the images and css url defined
+            $smarty->setTemplateDir($templateRoot);           
+            $compileDir = defined('OPENBIZ_SMARTY_CPL_PATH') ? OPENBIZ_SMARTY_CPL_PATH . "/" . $themePath : $templateRoot . "/cpl";
+            $smarty->setCompileDir($compileDir);            
+            $smarty->setConfigDir($templateRoot . "/cfg");            
             $smarty->config_load('tpl.conf');
         } else {
             if (defined('SMARTY_TPL_PATH')) {
-                $smarty->template_dir = SMARTY_TPL_PATH;
+                $smarty->setTemplateDir( SMARTY_TPL_PATH );
             }
             if (defined('OPENBIZ_SMARTY_CPL_PATH')) {
-                $smarty->compile_dir = OPENBIZ_SMARTY_CPL_PATH . "/" . $themePath;
+                $smarty->setCompileDir( OPENBIZ_SMARTY_CPL_PATH . "/" . $themePath );
             }
             if (defined('SMARTY_CFG_PATH')) {
-                $smarty->config_dir = SMARTY_CFG_PATH;
+                $smarty->setConfigDir( SMARTY_CFG_PATH );
             }
         }
+        
         if (!is_dir($smarty->compile_dir)) {
             mkdir($smarty->compile_dir, 0777);
         }
+        
         // load the config file which has the images and css url defined
         $smarty->assign('app_url', OPENBIZ_APP_URL);
         $smarty->assign('app_index', OPENBIZ_APP_INDEX_URL);

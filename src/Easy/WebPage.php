@@ -1,4 +1,4 @@
-<?PHP
+<?php
 
 /**
  * Openbizx Framework
@@ -254,33 +254,22 @@ class WebPage extends MetaObject implements Statefullable
      */
     protected function _render()
     {
-        $this->setClientScripts();
         if ($this->cacheLifeTime > 0) {
             $pageUrl = $this->curPageURL();
             $cache_id = md5($pageUrl);
             //try to process cache service.
             $cacheSvc = Openbizx::getService(CACHE_SERVICE, 1);
             $cacheSvc->init($this->objectName, $this->cacheLifeTime);
-            //if ($cacheSvc->test($cache_id)) {
-            //    Openbizx::$app->getLog()->log(LOG_DEBUG, "VIEW", "Cache Hit. url = " . $pageUrl);
-            //    $output = $cacheSvc->load($cache_id);
-            //} else {
-            //include_once(OPENBIZ_BIN."/Easy/ViewRenderer.php");
             $this->consoleOutput = false;
             $output = ViewRenderer::render($this);
             Openbizx::$app->getLog()->log(LOG_DEBUG, "VIEW", "Set cache. url = " . $pageUrl);
             $cacheSvc->save($output, $cache_id);
-            //}
             print $output;
         } else {
+            $this->setClientScripts();
             ViewRenderer::render($this);
         }
         return;
-        /*
-          $this->setClientScripts();
-          //include_once(OPENBIZ_BIN."/Easy/ViewRenderer.php");
-          return ViewRenderer::render($this);
-         */
     }
 
     /**
@@ -352,6 +341,7 @@ class WebPage extends MetaObject implements Statefullable
     {
         // if url has form=...
         $paramForm = isset($_REQUEST['form']) ? $_REQUEST['form'] : null;
+        
         // check url arg as fld:name=val
         $getKeys = array_keys($_REQUEST);
         $pageid = $_GET["pageid"];

@@ -88,8 +88,9 @@ class FormRenderer
         if (isset($formObj->searchPanel)) {
             $search_record = $formObj->searchPanelValues;
             foreach ($formObj->searchPanel as $elem) {
-                if (!$elem->fieldName)
+                if (!$elem->fieldName) {
                     continue;
+                }
                 $post_value = Openbizx::$app->getClientProxy()->getFormInputs($elem->objectName);
                 if ($post_value) {
                     $search_record[$elem->fieldName] = $post_value;
@@ -105,7 +106,6 @@ class FormRenderer
         if (isset($formObj->wizardPanel)) {
             $tplAttributes['wizardPanel'] = $formObj->wizardPanel->render();
         }
-
         $tplAttributes['form'] = $formObj->outputAttrs();
 
         return $tplAttributes;

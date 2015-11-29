@@ -102,10 +102,10 @@ class ViewRenderer
     /**
      * Gather all template variables needed. Should play well with Smarty or \Zend templates
      *
-     * @param WebPage $viewObj
+     * @param WebPage $webPage
      * @return array associative array holding all needed VIEW based template variables
      */
-    static public function buildTemplateAttributes($viewObj)
+    static public function buildTemplateAttributes($webPage)
     {
         // Assocative Array to hold all Template Values
         // Fill with default viewobj attributes
@@ -114,35 +114,42 @@ class ViewRenderer
         $newClntObjs = '';
 
         //Fill other direct view variables
-        $tplAttributes["module"] = $viewObj->getModuleName($viewObj->objectName);
-        $tplAttributes["description"] = $viewObj->objectDescription;
-        $tplAttributes["keywords"] = $viewObj->keywords;
-        if (isset($viewObj->tiles)) {
-            foreach ($viewObj->tiles as $tname => $tile) {
+        $tplAttributes["module"] = $webPage->getModuleName($webPage->objectName);
+        $tplAttributes["description"] = $webPage->objectDescription;
+        $tplAttributes["keywords"] = $webPage->keywords;
+        
+        if (isset($webPage->tiles)) {
+            foreach ($webPage->tiles as $tname => $tile) {
+                // renderForms() : BEGIN
                 foreach ($tile as $formRef) {
-                    if ($formRef->display == false)
+                    if ($formRef->display == false) {
                         continue;
+                    }
                     $tiles[$tname][$formRef->objectName] = Openbizx::getObject($formRef->objectName)->render();
                     $tiletabs[$tname][$formRef->objectName] = $formRef->objectDescription;
                 }
+                // renderForms() : END
             }
-        } else {
-            foreach ($viewObj->formRefs as $formRef) {
-                if ($formRef->display == false)
+        } else {            
+            // renderForms() : BEGIN
+            foreach ($webPage->formRefs as $formRef) {
+                if ($formRef->display == false) {
                     continue;
+                }
                 $forms[$formRef->objectName] = Openbizx::getObject($formRef->objectName)->render();
                 $formtabs[$formRef->objectName] = $formRef->objectDescription;
             }
+            // renderForms() : END            
         }
-
-        if (count($viewObj->widgets)) {
-            foreach ($viewObj->widgets as $formRef) {
-                if ($formRef->display == false)
+        if (count($webPage->widgets)) {
+            // renderForms() : BEGIN
+            foreach ($webPage->widgets as $formRef) {
+                if ($formRef->display == false) {
                     continue;
+                }
                 $widgets[$formRef->objectName] = Openbizx::getObject($formRef->objectName)->render();
             }
         }
-
         //Fill Loop related data
         $tplAttributes["forms"] = $forms;
         $tplAttributes["widgets"] = $widgets;
@@ -153,17 +160,18 @@ class ViewRenderer
         // add clientProxy scripts
         $includedScripts = Openbizx::$app->getClientProxy()->getAppendedScripts();
         $tplAttributes["style_sheets"] = Openbizx::$app->getClientProxy()->getAppendedStyles();
-        if ($viewObj->isPopup && $bReRender == false) {
-            $moveToCenter = "moveToCenter(self, " . $viewObj->width . ", " . $viewObj->height . ");";
+        
+        if ($webPage->isPopup && $bReRender == false) {
+            $moveToCenter = "moveToCenter(self, " . $webPage->width . ", " . $webPage->height . ");";
             $tplAttributes["scripts"] = $includedScripts . "\n<script>\n" . $newClntObjs . $moveToCenter . "</script>\n";
-        } else
+        } else {
             $tplAttributes["scripts"] = $includedScripts . "\n<script>\n" . $newClntObjs . "</script>\n";
-
-        if ($viewObj->title)
-            $tplAttributes["title"] = Expression::evaluateExpression($viewObj->title, $viewObj);
-        else
-            $tplAttributes["title"] = $viewObj->objectDescription;
-
+        }
+        if ($webPage->title) {
+            $tplAttributes["title"] = Expression::evaluateExpression($webPage->title, $webPage);
+        } else {
+            $tplAttributes["title"] = $webPage->objectDescription;
+        }
         if (OPENBIZ_DEFAULT_SYSTEM_NAME) {
             $tplAttributes["title"] = $tplAttributes["title"] . ' - ' . OPENBIZ_DEFAULT_SYSTEM_NAME;
         }
@@ -193,14 +201,23 @@ class ViewRenderer
             $smarty->assign($key, $value);
         }
         
-        //echo __METHOD__ . __LINE__. ' - ' . $webpage->templateFile . '<br />';
-        //echo __METHOD__ . __LINE__. ' - ' . TemplateHelper::getTplFileWithPath($webpage->templateFile, $webpage->package) . '<br />';
-
-        //if ($viewObj->consoleOutput) {
+        self::registerSmartyPlugin($smarty);
+        
+        //if ($webpage->consoleOutput) {
             $smarty->display(TemplateHelper::getTplFileWithPath($webpage->templateFile, $webpage->package));
         //} else {
-        //    return $smarty->fetch(TemplateHelper::getTplFileWithPath($viewObj->templateFile, $viewObj->package));
+        //    return $smarty->fetch(TemplateHelper::getTplFileWithPath($webpage->templateFile, $webpage->package));
         //}
+    }
+    
+    public static function registerSmartyPlugin($smarty)
+    {
+    
+    }
+    
+    public static function blockTranslate($params, $content, $template, &$repeat)
+    {
+        
     }
 
     /**
@@ -224,10 +241,11 @@ class ViewRenderer
                 $view->$key = $value;
             }
         }
-        if ($viewObj->consoleOutput)
+        if ($viewObj->consoleOutput) {
             echo $view->render($viewObj->templateFile);
-        else
+        } else {
             return $view->render($viewObj->templateFile);
+        }
     }
 
     /**
