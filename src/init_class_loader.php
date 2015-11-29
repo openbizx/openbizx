@@ -1,7 +1,5 @@
 <?php
 
-use Openbizx\ClassLoader;
-
 include_once("ClassLoader.php");
 
 spl_autoload_register(['\Openbizx\ClassLoader', 'autoload']);

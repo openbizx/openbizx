@@ -51,18 +51,9 @@ class ClassLoader
      */
     public static function autoload($className)
     {        
-        $filePath = self::getAutoloadLibFileWithPath($className);
-
-        //if ($className==='Zend_Cache') {
-        //    echo $className . '-' . $filePath . '<br />';
-        //}
-        
-        //var_dump( $filePath);
+        $filePath = self::getAutoloadLibFileWithPath($className);       
         if ($filePath) {
             include_once($filePath); // auto_load
-            //if ($className==='Openbizx\Data\NodeRecord') {
-            //    echo (class_exists($className)? 'ada':'tidal-ada');
-            //}
             self::$_classNameCache[$className] = 1; // 
             return true;
         }
@@ -92,26 +83,13 @@ class ClassLoader
             return $filePath;
         }
 
-        if (strpos($className, 'Zend_') === 0) {
-            $filePath = self::getZendFileWithPath($className);
-        } else {
-            $filePath = self::getCoreLibFilePath($className);
-        }
+        $filePath = self::getCoreLibFilePath($className);
+
         // cache it to save file search
         if ($filePath && extension_loaded('apc')) {
             apc_store($cacheKey, $filePath);
         }
-        /* if (!file_exists($filePath)) {
-          trigger_error("Cannot find the library file of $className", E_USER_ERROR);
-          } */
         return $filePath;
-    }
-
-    public static function getZendFileWithPath($className)
-    {
-        // autodiscover the path from the class name
-        $classFile = ZEND_FRWK_HOME . str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
-        return $classFile;
     }
 
     /**
@@ -127,9 +105,6 @@ class ClassLoader
             return true;
         }
         if (isset(self::$_classNameCache[$packageName . $className])) {
-            return true;
-        }
-        if (strpos($className, 'Zend_') === 0) {
             return true;
         }
         $filePath = self::getLibFileWithPath($className, $packageName);
@@ -201,7 +176,7 @@ class ClassLoader
             }
         }
         
-        $filePath = self::_findClassFileOnCache($className);
+        $filePath = self::findClassFileOnCache($className);
         if ( $filePath !== null ) {
             return $filePath;
         }
@@ -258,7 +233,7 @@ class ClassLoader
      * @param type $className
      * @return string|null full path filename if found or null if not found 
      */ 
-    private static function _findClassFileOnCache($className) {
+    private static function findClassFileOnCache($className) {
         // search it in cache first
         $cacheKey = $className . "_path";
         if (extension_loaded('apc') ) {

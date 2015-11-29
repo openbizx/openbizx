@@ -175,14 +175,14 @@ abstract class MetaObject //extends BizObject
         // find the class attribute
         $className = isset($xmlArr["ATTRIBUTES"]['CLASS']) ? $xmlArr["ATTRIBUTES"]['CLASS'] : $defaultClassName;
 
-        if ((bool) strpos($className, ".")) {
-            $a_package_name = explode(".", $className);
-            $className = array_pop($a_package_name);
-            $clsLoaded = ClassLoader::loadMetadataClass($className, implode(".", $a_package_name));
-            if (!$clsLoaded) {
-                trigger_error("Cannot find the load class $className", E_USER_ERROR);
-            }
-        }
+//        if ((bool) strpos($className, ".")) {
+//            $a_package_name = explode(".", $className);
+//            $className = array_pop($a_package_name);
+//            $clsLoaded = ClassLoader::loadMetadataClass($className, implode(".", $a_package_name));
+//            if (!$clsLoaded) {
+//                trigger_error("Cannot find the load class $className", E_USER_ERROR);
+//            }
+//        }
         //echo "classname is $className\n";
         $obj = new $className($xmlArr, $parentObj);
         return $obj;
