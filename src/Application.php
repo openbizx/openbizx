@@ -660,6 +660,8 @@ class Application //extends \Openbizx\Object\Object
 
     /**
      * Run application
+     * 
+     * @todo use respond object instead "echo" command
      */
     public function run()
     {
@@ -668,8 +670,7 @@ class Application //extends \Openbizx\Object\Object
         $eventlog = Openbizx::getService(OPENBIZ_EVENTLOG_SERVICE);
         $logComment = array('address', $_SERVER['REMOTE_ADDR']);
         $eventlog->log("LOGIN", "MSG_LOGIN_SUCCESSFUL", $logComment);
-        if ($this->processSecurityFilters()) {
-            /** @todo use respond object instead pure echo */
+        if ($this->processSecurityFilters()) {            
             echo $this->dispatchRequest() . ''; 
         }
         $this->onAfterRun();
