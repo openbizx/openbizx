@@ -101,8 +101,9 @@ class WebPage extends MetaObject implements Statefullable
         $this->readTile($xmlArr); // TODO: is this needed as title supports expression?
 
         $this->translate(); // translate for multi-language support
-        if (empty($this->title))
+        if (empty($this->title)) {
             $this->title = $this->objectDescription;
+        }
     }
 
     protected function readTile(&$xmlArr)
@@ -122,8 +123,9 @@ class WebPage extends MetaObject implements Statefullable
             $tmp = array();
             $this->formRefs = new MetaIterator($tmp, "", $this);
             foreach ($this->tiles as $tile) {
-                foreach ($tile as $ref)
+                foreach ($tile as $ref) {
                     $this->formRefs->set($ref->objectName, $ref);
+                }
             }
         }
     }
@@ -161,7 +163,6 @@ class WebPage extends MetaObject implements Statefullable
     protected function getMessage($msgId, $params = array())
     {
         $message = isset($this->objectMessages[$msgId]) ? $this->objectMessages[$msgId] : constant($msgId);
-        //$message = I18n::getInstance()->translate($message);
         $message = I18n::t($message, $msgId, $this->getModuleName($this->objectName));
         return vsprintf($message, $params);
     }
@@ -216,7 +217,6 @@ class WebPage extends MetaObject implements Statefullable
      */
     public function processRule()
     {
-
     }
 
     /**
@@ -226,11 +226,10 @@ class WebPage extends MetaObject implements Statefullable
      */
     public function setParameters()
     {
-
     }
 
     /**
-     * Render this view.
+     * Render this WebPage.
      *
      * @return mixed either print html content, or return html content
      * @example ../../../example/ViewObject.php     
@@ -238,8 +237,8 @@ class WebPage extends MetaObject implements Statefullable
     public function render()
     {
         if (!$this->allowAccess()) {
-            $accessDenyView = Openbizx::getObject(OPENBIZ_ACCESS_DENIED_VIEW);
-            return $accessDenyView->render();
+            $accessDenyWebpage = Openbizx::getObject(OPENBIZ_ACCESS_DENIED_WEBPAGE);
+            return $accessDenyWebpage->render();
         }
         $this->initAllForms();
         // check the "fld_..." arg in url and put it in the search rule
@@ -264,10 +263,10 @@ class WebPage extends MetaObject implements Statefullable
             $output = ViewRenderer::render($this);
             Openbizx::$app->getLog()->log(LOG_DEBUG, "VIEW", "Set cache. url = " . $pageUrl);
             $cacheSvc->save($output, $cache_id);
-            print $output;
+            return $output;
         } else {
             $this->setClientScripts();
-            ViewRenderer::render($this);
+            return ViewRenderer::render($this);
         }
         return;
     }

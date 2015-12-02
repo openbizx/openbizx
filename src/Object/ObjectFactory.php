@@ -2,6 +2,8 @@
 
 /**
  * Openbizx Framework
+ * 
+ * Based on Openbiz Framework by Rocky Swen (Openbiz LLC)
  *
  * LICENSE
  *
@@ -58,7 +60,6 @@ class ObjectFactory
      */
     public function getObject($objectName, $new = 0)
     {
-        //echo $objectName . '<br />';
         if (isset($this->_objectsMap[$objectName]) && $new == 0) {
             return $this->_objectsMap[$objectName];
         }
@@ -66,7 +67,8 @@ class ObjectFactory
         $obj = $this->constructObject($objectName);
         if (!$obj) {
             return null;
-        } // save object to cache
+        } 
+        // save object to cache
         $this->_objectsMap[$objectName] = $obj;
         if ($new != 1) {
             if (method_exists($obj, "loadStatefullVars")) {

@@ -60,9 +60,9 @@ class Application //extends \Openbizx\Object\Object
      */
     public $request;
     public $timeZone = 'Asia/jakarta';
-    private $_userTimeoutView = OPENBIZ_USER_TIMEOUT_VIEW;
-    private $_accessDeniedView = OPENBIZ_ACCESS_DENIED_VIEW;
-    private $_securityDeniedView = OPENBIZ_SECURITY_DENIED_VIEW;
+    private $_userTimeoutView = OPENBIZ_USER_TIMEOUT_WEBPAGE;
+    private $_accessDeniedView = OPENBIZ_ACCESS_DENIED_WEBPAGE;
+    private $_securityDeniedView = OPENBIZ_SECURITY_DENIED_WEBPAGE;
     private $_defaultThemeName;
     private $_cssUrl;
     private $_jsUrl;
@@ -384,11 +384,11 @@ class Application //extends \Openbizx\Object\Object
         $err_msg = $securityService->getErrorMessage();
         if ($err_msg) {
             if ($this->_securityDeniedView) {
-                $view = $this->_securityDeniedView;
+                $webpage = $this->_securityDeniedView;
             } else {
-                $view = $this->_accessDeniedView;
+                $webpage = $this->_accessDeniedView;
             }
-            $this->renderView($view);
+            $this->renderView($webpage);
             return false;
         }
         return true;
@@ -397,7 +397,7 @@ class Application //extends \Openbizx\Object\Object
     /**
      * Dispatches client requests to proper objects, print the returned html text.
      *
-     * @return void
+     * @return string
      */
     public function dispatchRequest()
     {
@@ -406,9 +406,9 @@ class Application //extends \Openbizx\Object\Object
                 $this->getSessionContext()->destroy();
                 $this->getClientProxy()->redirectView($this->_userTimeoutView);
             }
-            $this->dispatchRPC();
+            return $this->dispatchRPC();
         } else {
-            $this->dispatchView();
+            return $this->dispatchView();
         }
     }
 
@@ -457,27 +457,25 @@ class Application //extends \Openbizx\Object\Object
     /**
      * Render a bizview
      *
-     * @param string $viewName name of bizview
+     * @param string $webpageName name of bizview
      * @param string $rule the search rule of a bizform who is not depent on (a subctrl of) another bizform
      * @return void
      */
-    public function renderView($viewName, $form = "", $rule = "", $params = null, $hist = "")
+    public function renderView($webpageName, $form = "", $rule = "", $params = null, $hist = "")
     {
         /* @var $webpage \Openbizx\Easy\WebPage */
-        if ($viewName == "__DynPopup") {
-            $webpage = Openbizx::getWebpageObject($viewName);
-            $webpage->render();
-            return;
+        if ($webpageName == "__DynPopup") {
+            $webpage = Openbizx::getWebpageObject($webpageName);
+            return $webpage->render();
         }        
-        $this->setCurrentViewName($viewName);
-        $webpage = Openbizx::getWebpageObject($viewName);
+        $this->setCurrentViewName($webpageName);
+        $webpage = Openbizx::getWebpageObject($webpageName);
         if (!$webpage) {
-            return;
+            return '';
         }
         
         $viewSet = $webpage->getViewSet();
-        $this->setCurrentViewSet($viewSet);
-        
+        $this->setCurrentViewSet($viewSet);        
         $this->getSessionContext()->clearSessionObjects(true);
 
         if ($hist == "N") { // clean view history
@@ -492,7 +490,7 @@ class Application //extends \Openbizx\Object\Object
         if (isset($_GET['mode'])) {   // can specify mode of form
             $webpage->setFormMode($form, $_GET['mode']);
         }
-        $webpage->render();
+        return $webpage->render();
     }
 
     /**
@@ -504,12 +502,11 @@ class Application //extends \Openbizx\Object\Object
     {
         $request = $this->request;
         if (!$request->hasInvocation()) {
-            return null;
+            return '';
         }
         if (!$request->isValidInvocation()) {
             $invocationType = $request->getInvocationType();
             trigger_error("$invocationType is not a valid invocation", E_USER_ERROR);
-            return;
         }
         if ($request->isRPCInvokeInvocation()) {
             $this->getClientProxy()->setRpcFlag(true);
@@ -602,20 +599,19 @@ class Application //extends \Openbizx\Object\Object
         $request = $this->request;
 
         if (!ObjectFactoryHelper::getXmlFileWithPath($request->view)) {
-            $this->renderNotFoundView();
-            exit;
+            return $this->renderNotFoundView();
         }
         if (!$this->canUserAccessView($request->view)) {  //access denied error
-            $this->renderView($this->_accessDeniedView);
+            return $this->renderView($this->_accessDeniedView);
         }
-        $this->renderView($request->view, $request->form, $request->rule, $request->params, $request->hist);
+        return $this->renderView($request->view, $request->form, $request->rule, $request->params, $request->hist);
     }
 
     private function renderNotFoundView()
     {
         if (defined('OPENBIZ_NOTFOUND_VIEW')) {
             $request = $this->request;
-            $this->renderView(OPENBIZ_NOTFOUND_VIEW, $request->form, $request->rule, $request->params, $request->hist);
+            return $this->renderView(OPENBIZ_NOTFOUND_VIEW, $request->form, $request->rule, $request->params, $request->hist);
         } else {
             throw new Exception("'Not Found View' not defined.");
         }
@@ -629,9 +625,7 @@ class Application //extends \Openbizx\Object\Object
         if ($this->request->hasContainerView()) {
             $this->setCurrentViewName($this->request->getContainerViewName());
         }
-        $retval = $this->invokeRPC();
-        print($retval . " "); // why use space on end of data?
-        exit();
+        return $this->invokeRPC();
     }
 
     /**
@@ -675,7 +669,8 @@ class Application //extends \Openbizx\Object\Object
         $logComment = array('address', $_SERVER['REMOTE_ADDR']);
         $eventlog->log("LOGIN", "MSG_LOGIN_SUCCESSFUL", $logComment);
         if ($this->processSecurityFilters()) {
-            $this->dispatchRequest();
+            /** @todo use respond object instead pure echo */
+            echo $this->dispatchRequest() . ''; 
         }
         $this->onAfterRun();
     }

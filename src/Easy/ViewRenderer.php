@@ -42,9 +42,7 @@ class ViewRenderer
         $tplEngine = $webpage->templateEngine;
         $tplAttributes = ViewRenderer::buildTemplateAttributes($webpage);
 
-        if (defined("OPENBIZ_PAGE_MINIFY") && OPENBIZ_PAGE_MINIFY == 1) {
-            ob_start();
-        }
+        ob_start();
 
         if ($tplEngine == "Smarty" || $tplEngine == null) {
             ViewRenderer::renderSmarty($webpage, $tplAttributes);
@@ -52,11 +50,11 @@ class ViewRenderer
             ViewRenderer::renderPHP($webpage, $tplAttributes);
         }
 
+        $html = ob_get_contents();
+        ob_end_clean();
+        
         if (defined("OPENBIZ_PAGE_MINIFY") && OPENBIZ_PAGE_MINIFY == 1) {
-            $html = ob_get_contents();
-            ob_end_clean();
             $html = self::MinifyOutput($html);
-            echo $html;
         }
         return $html;
     }
