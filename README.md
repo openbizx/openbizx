@@ -16,7 +16,7 @@ composer require openbizx/openbizx
 or add
 
 ```
-"openbizx/openbizx": "~1.0.0",
+"openbizx/openbizx": "*",
 ```
 
 to the require section of your composer.json.
