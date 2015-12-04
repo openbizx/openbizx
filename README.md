@@ -4,7 +4,6 @@ Openbizx Framework - Metadata Oriented Enterprise Application Framewoek for PHP 
 OpenbizX is next version of Openbiz Framework with great enhancement. We create OpenbizX as modern framework that compatible with PHP-FIG Standards and can install use Composer.
 
 ## Installation 
-The preferred way to install the Yii framework is through composer.
 
 Either run
 
