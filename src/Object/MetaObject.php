@@ -61,9 +61,8 @@ abstract class MetaObject //extends BizObject
     public $access;
     public $stateless;
 
-    function __construct(&$xmlArr)
+    function __construct(&$config)
     {
-
     }
 
     //function __destruct() {}
@@ -111,10 +110,11 @@ abstract class MetaObject //extends BizObject
             $metaList = null;
             return;
         }
-        if (isset($xmlArr["ATTRIBUTES"]))
+        if (isset($xmlArr["ATTRIBUTES"])) {
             $metaList[] = $xmlArr;
-        else
+        } else {
             $metaList = $xmlArr;
+        }
     }
 
     /**
@@ -144,8 +144,9 @@ abstract class MetaObject //extends BizObject
     public function getProperty($propertyName)
     {
         // TODO: really like this?
-        if (isset($this->$propertyName))
+        if (isset($this->$propertyName)) {
             return $this->$propertyName;
+        }
         return null;
     }
 
@@ -170,21 +171,11 @@ abstract class MetaObject //extends BizObject
         return OPENBIZ_ALLOW;
     }
 
-    protected function getElementObject(&$xmlArr, $defaultClassName, $parentObj = null)
+    protected function getElementObject(&$config, $defaultClassName, $parentObj = null)
     {
         // find the class attribute
-        $className = isset($xmlArr["ATTRIBUTES"]['CLASS']) ? $xmlArr["ATTRIBUTES"]['CLASS'] : $defaultClassName;
-
-//        if ((bool) strpos($className, ".")) {
-//            $a_package_name = explode(".", $className);
-//            $className = array_pop($a_package_name);
-//            $clsLoaded = ClassLoader::loadMetadataClass($className, implode(".", $a_package_name));
-//            if (!$clsLoaded) {
-//                trigger_error("Cannot find the load class $className", E_USER_ERROR);
-//            }
-//        }
-        //echo "classname is $className\n";
-        $obj = new $className($xmlArr, $parentObj);
+        $className = isset($config["ATTRIBUTES"]['CLASS']) ? $config["ATTRIBUTES"]['CLASS'] : $defaultClassName;
+        $obj = new $className($config, $parentObj);
         return $obj;
     }
 

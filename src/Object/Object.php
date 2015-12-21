@@ -1,9 +1,16 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Openbizx Framework (http://openbizx.github.io/)
+ *
+ * LICENSE
+ *
+ * This source file is subject to the BSD license that is bundled
+ * with this package in the file LICENSE.txt.
+ *
+ * @copyright Copyright (c) 2015 Mpu Technology
+ * @license   http://opensource.org/licenses/BSD-3-Clause
+ * @link      http://openbizx.github.io/
  */
 
 namespace Openbizx\Object;
@@ -11,11 +18,16 @@ namespace Openbizx\Object;
 use Openbizx\Object\ObjectHelper;
 
 /**
- * Description of BizObject
- *
- * @author agus
+ * This class is base class for Openbizx 
+ * This class is adapted from Yii Object but loose couple 
+ * so other application can use this package individualy
+ * 
+ * @link https://github.com/openbizx/openbizx/blob/master/src/Object/Object.php
+ * @author Agus Suhartono <agus.suhartono@gmail.com>
+ * @since 1.0
  */
-class Object {
+class Object
+{
 
     /**
      * Returns the fully qualified name of this class.
@@ -24,23 +36,31 @@ class Object {
      * 
      * @return string the fully qualified name of this class.
      */
-    public static function className() {
+    public static function className()
+    {
         return get_called_class();
     }
 
-    public function __construct($config = []) {
+    /**
+     * Constructor.
+     * @param array $config [optional]
+     */
+    public function __construct($config = [])
+    {
         if (!empty($config)) {
-            ObjecttHelper::configure($this, $config);
+            ConfiguratorManager::configure($this, $config);
         }
-        $this->init();        
+        $this->init();
     }
 
     /**
      * Initializes the object.
      * This method is invoked at the end of the constructor after the object is initialized with the
      * given configuration.
+     * Please don't put initialize code in __contructor()
      */
-    public function init() {
+    public function init()
+    {
         
     }
 
@@ -55,7 +75,8 @@ class Object {
      * @throws InvalidCallException if the property is write-only
      * @see __set()
      */
-    public function __get($name) {
+    public function __get($name)
+    {
         $getter = 'get' . $name;
         if (method_exists($this, $getter)) {
             return $this->$getter();
@@ -79,7 +100,8 @@ class Object {
      * @throws InvalidCallException if the property is read-only
      * @see __get()
      */
-    public function __set($name, $value) {
+    public function __set($name, $value)
+    {
         $setter = 'set' . $name;
         if (method_exists($this, $setter)) {
             $this->$setter($value);
@@ -102,7 +124,8 @@ class Object {
      * @param string $name the property name or the event name
      * @return boolean whether the named property is set (not null).
      */
-    public function __isset($name) {
+    public function __isset($name)
+    {
         $getter = 'get' . $name;
         if (method_exists($this, $getter)) {
             return $this->$getter() !== null;
@@ -122,7 +145,8 @@ class Object {
      * @param string $name the property name
      * @throws InvalidCallException if the property is read only.
      */
-    public function __unset($name) {
+    public function __unset($name)
+    {
         $setter = 'set' . $name;
         if (method_exists($this, $setter)) {
             $this->$setter(null);
@@ -141,7 +165,8 @@ class Object {
      * @throws UnknownMethodException when calling unknown method
      * @return mixed the method return value
      */
-    public function __xcall($name, $params) {
+    public function __xcall($name, $params)
+    {
         throw new UnknownMethodException('Unknown method: ' . get_class($this) . "::$name()");
     }
 
@@ -159,7 +184,8 @@ class Object {
      * @see canGetProperty()
      * @see canSetProperty()
      */
-    public function hasProperty($name, $checkVars = true) {
+    public function hasProperty($name, $checkVars = true)
+    {
         return $this->canGetProperty($name, $checkVars) || $this->canSetProperty($name, false);
     }
 
@@ -176,7 +202,8 @@ class Object {
      * @return boolean whether the property can be read
      * @see isReadableProperty()
      */
-    public function canGetProperty($name, $checkVars = true) {
+    public function canGetProperty($name, $checkVars = true)
+    {
         return method_exists($this, 'get' . $name) || $checkVars && property_exists($this, $name);
     }
 
@@ -193,7 +220,8 @@ class Object {
      * @return boolean whether the property can be written
      * @see isReadableProperty()
      */
-    public function isWritableProperty($name, $checkVars = true) {
+    public function isWritableProperty($name, $checkVars = true)
+    {
         return method_exists($this, 'set' . $name) || ($checkVars && property_exists($this, $name));
     }
 
@@ -205,7 +233,8 @@ class Object {
      * @param string $name the property name
      * @return boolean whether the property is defined
      */
-    public function hasMethod($name) {
+    public function hasMethod($name)
+    {
         return method_exists($this, $name);
     }
 
@@ -216,7 +245,8 @@ class Object {
      * @return array the array representation of the object
      * @todo Maybe this method must inherit from Arrayable interface.
      */
-    public function toArray() {
+    public function toArray()
+    {
         return ObjectHelper::getObjectVars($this);
     }
 

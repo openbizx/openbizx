@@ -72,8 +72,8 @@ class ObjectFactoryHelper
         //echo "getXmlArray($xmlFile)\n";
         //$objCmpFileName = dirname($objXmlFileName) . "/__cmp/" . basename($objXmlFileName, "xml") . ".cmp";
         //$_crc32 = sprintf('%08X', crc32(dirname($objXmlFileName)));
-        $_crc32 = strtoupper(md5(dirname($objXmlFileName)));
-        $objCmpFileName = OPENBIZ_CACHE_METADATA_PATH . '/' . $_crc32 . '_'
+        $_hash = strtoupper(md5(dirname($objXmlFileName)));
+        $objCmpFileName = OPENBIZ_CACHE_METADATA_PATH . '/' . $_hash . '_'
                 . basename($objXmlFileName, "xml") . "cmp";
 
         $xmlArr = null;

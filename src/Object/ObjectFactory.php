@@ -40,7 +40,23 @@ class ObjectFactory
      * @var array
      */
     private $_objectsMap = array();
+    
+    
+    /**
+     * @var array service definitions
+     */
+    private $_definitions = [];
+
+    public function setDefinition( $name, $definition ) 
+    {
+        
+    }
      
+    public function getDefinition()
+    {
+        
+    }
+
     public function __construct()
     {
 
@@ -116,17 +132,11 @@ class ObjectFactory
      */
     protected function constructObject($objName, &$xmlArr = null)
     {               
-        //echo '<pre>';
-        //echo __METHOD__.'-'.__LINE__ . ' : BEGIN ========================<br />';
-        //echo 'par: objName : ' . $objName . '<br />';
         
         if (!$xmlArr) {
             $xmlFile = ObjectFactoryHelper::getXmlFileWithPath($objName);            
-            //echo __METHOD__.'-'.__LINE__ . ' $xmlFile : ' . $xmlFile . '<br>';
             if ($xmlFile) { 
                 $xmlArr = ObjectFactoryHelper::getXmlArray($xmlFile);                
-                //echo __METHOD__.'-'.__LINE__ . '<br />';
-                //echo var_dump($xmlArr);
             } else {
                 
                 //$this->_createObjectFromClass($objName);
@@ -152,13 +162,7 @@ class ObjectFactory
             }
         }        
         
-        if ($xmlArr) {       
-            
-            //echo __METHOD__.'-'.__LINE__ . ' <br />';
-            
-            //if ($objName == 'system.view.UserListView')
-              //  echo var_dump($xmlArr);
-            
+        if ($xmlArr) {           
             $keys = array_keys($xmlArr);
             $root = $keys[0];
 
